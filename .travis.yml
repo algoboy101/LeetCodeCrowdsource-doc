@@ -26,9 +26,10 @@ install:
   - pip3 install sphinx travis-sphinx recommonmark sphinx_rtd_theme
   
   # sphinx pdf
-  - sudo cp apts/* /var/cache/apt/archives/
+  # - sudo cp apts/* /var/cache/apt/archives/
   - sudo apt-get install texlive-full
   - sudo apt-get install pandoc
+  - cp /var/cache/apt/archives/*.deb apts/
 
 # before_script:
 #   # hexo html
