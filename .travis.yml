@@ -1,0 +1,69 @@
+# language: node_js
+# node_js:
+#   - 10 # use nodejs v10 LTS
+
+# cache: npm
+
+cache:
+  directories:
+    - apts 
+    # - node_modules
+
+branches:
+  only:
+    - master # build master branch only
+
+#在构建之前安装hexo环境
+before_install:
+  - sudo apt-get update
+  
+install:
+  # hexo html
+  # - npm install -g hexo-cli
+
+  # sphinx html
+  - sudo apt-get install python3-pip python3-setuptools python3-wheel #python3-sphinx
+  - pip3 install sphinx travis-sphinx recommonmark sphinx_rtd_theme
+  
+  # sphinx pdf
+  - sudo cp apts/* /var/cache/apt/archives/
+  - sudo apt-get install texlive-full
+  - sudo apt-get install pandoc
+
+# before_script:
+#   # hexo html
+#   - cp backup/blog/* . -R     # 拷贝blog文件
+#   - cp _posts source/ -R # 拷贝文章文件
+#   - npm install
+#   - git config user.name "Xuezhi.Zhang"
+#   - git config user.email "algoboy@126.com"
+#   # 替换同目录下的_config.yml文件中github_token字符串为travis后台刚才配置的变量，注>意此处sed命令用了双引号。单引号无效！
+#   - sed -i "s/github_token/${GH_TOKEN}/g" _config.yml || exit 1
+#   - cat _config.yml
+
+# 执行清缓存，生成网页操作
+script:
+  # # hexo html ./public
+  # - hexo clean
+  # - hexo generate # generate static files
+  # - ls public
+  # ##################
+  # sphinx
+  # 删除header
+  - python backup/sphinx/gen_source_del_header.py
+
+  # 构建 html文档：doc/build
+  - python backup/sphinx/gen_source_html.py # 构建 index.rst
+  - travis-sphinx build --source=./backup/sphinx/source --nowarn
+
+  # 构建 pdf文档：build/latex/sphinx.pdf
+  - python backup/sphinx/gen_source_pdf.py # 构建 index.rst
+  - cd backup/sphinx
+  - make latexpdf
+  - cp build/latex/leetcodecrowdsource.pdf ../../LeetCodeCrowdsource.pdf
+  - cd ../../
+  - cp ./LeetCodeCrowdsource.pdf doc/build/
+
+after_success:
+  # - hexo deploy
+  - travis-sphinx deploy -b master -c "doc.leetcode.xuezhisd.top" -m "update blog automatically by travis."
