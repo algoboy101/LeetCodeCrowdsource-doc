@@ -67,4 +67,4 @@ script:
 
 after_success:
   # - hexo deploy
-  - travis-sphinx deploy -b master -c "doc.leetcode.xuezhisd.top" -m "update blog automatically by travis."
+  - travis-sphinx deploy -b master -c "leetcodedoc.xuezhisd.top" -m "update blog automatically by travis."
