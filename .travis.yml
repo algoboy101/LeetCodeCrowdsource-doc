@@ -14,8 +14,8 @@ branches:
     - master # build master branch only
 
 # #在构建之前安装hexo环境
-# before_install:
-#   - sudo apt-get update
+before_install:
+  - sudo apt-get update
   
 install:
   # hexo html
