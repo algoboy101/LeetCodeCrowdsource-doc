@@ -1,3 +1,4 @@
+language: python - "3.7"
 # language: node_js
 # node_js:
 #   - 10 # use nodejs v10 LTS
